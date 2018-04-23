@@ -29,6 +29,7 @@
     <http auto-config="true">
         <intercept-url pattern="/ticket/delete/**" access="hasRole('ADMIN')" />
         <intercept-url pattern="/ticket/**" access="hasAnyRole('USER','ADMIN')" />
+         <intercept-url pattern="/user/**" access="permitAll" />
         <form-login login-page="/login" authentication-failure-url="/login?error" />
         <logout logout-success-url="/login?logout"
                 invalidate-session="true"
@@ -39,11 +40,14 @@
     <context:annotation-config />
 
     <b:bean id="ticketUserService" class="ouhk.comps380f.service.TicketUserService" />
-
+    <b:bean id="bCryptPasswordEncoder"
+            class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
     <authentication-manager>
-        <authentication-provider user-service-ref="ticketUserService" />
+        <authentication-provider user-service-ref="ticketUserService">
+            <password-encoder ref="bCryptPasswordEncoder" />
+        </authentication-provider>
     </authentication-manager>
-
+    
     <!-- Create default configuration for Hibernate -->
     <b:bean id="hibernateJpaVendorAdapter" 
             class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
@@ -78,5 +82,7 @@
       repository interfaces 
     -->
     <jpa:repositories base-package="ouhk.comps380f.dao"/>
-  
+    
+   
+    
 </b:beans>
